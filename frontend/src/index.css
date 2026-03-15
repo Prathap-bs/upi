@@ -421,8 +421,79 @@ button:disabled {
 		position: static;
 	}
 
+	.table-wrap {
+		overflow: visible;
+		border: 0;
+		background: transparent;
+	}
+
 	.table {
-		min-width: 500px;
+		min-width: 0;
+		display: block;
+	}
+
+	.table thead {
+		display: none;
+	}
+
+	.table tbody {
+		display: grid;
+		gap: 10px;
+	}
+
+	.table tr {
+		display: block;
+		border: 1px solid #d5e6df;
+		border-radius: 14px;
+		background: #ffffff;
+		box-shadow: 0 10px 20px rgba(22, 74, 60, 0.08);
+		overflow: hidden;
+	}
+
+	.table td {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 10px;
+		padding: 9px 11px;
+		border: 0;
+		border-bottom: 1px dashed #dfebe6;
+		font-size: 0.93rem;
+	}
+
+	.table td:last-child {
+		border-bottom: 0;
+	}
+
+	.table td::before {
+		content: attr(data-label);
+		font-family: 'Urbanist', sans-serif;
+		font-weight: 700;
+		color: #2f5148;
+		min-width: 92px;
+		padding-right: 8px;
+		text-align: left;
+	}
+
+	.table td.action-cell {
+		display: block;
+	}
+
+	.table td.action-cell::before {
+		display: block;
+		margin-bottom: 8px;
+	}
+
+	.table td.action-cell > button {
+		width: 100%;
+	}
+
+	.table td[data-label='Select'] {
+		align-items: center;
+	}
+
+	.table td[data-label='Select']::before {
+		min-width: 70px;
 	}
 
 	.card {

@@ -193,10 +193,10 @@ export default function App() {
                   <tbody>
                     {accounts.map((acc) => (
                       <tr key={acc._id}>
-                        <td><input type="radio" checked={acc.isActive} onChange={() => selectAccount(acc._id)} /></td>
-                        <td>{acc.name}</td>
-                        <td>{acc.upiId}</td>
-                        <td>{acc.isActive ? 'Active' : 'Inactive'}</td>
+                        <td data-label="Select"><input type="radio" checked={acc.isActive} onChange={() => selectAccount(acc._id)} /></td>
+                        <td data-label="Name">{acc.name}</td>
+                        <td data-label="UPI ID">{acc.upiId}</td>
+                        <td data-label="Status">{acc.isActive ? 'Active' : 'Inactive'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -220,10 +220,10 @@ export default function App() {
                   <tbody>
                     {requests.map((req) => (
                       <tr key={req._id}>
-                        <td>{req.upiAccount.upiId}</td>
-                        <td>Rs {req.amount}</td>
-                        <td><span className={`label-status ${statusLabel(req.status)}`}>{req.status}</span></td>
-                        <td className="action-cell">
+                        <td data-label="UPI">{req.upiAccount.upiId}</td>
+                        <td data-label="Amount">Rs {req.amount}</td>
+                        <td data-label="Status"><span className={`label-status ${statusLabel(req.status)}`}>{req.status}</span></td>
+                        <td data-label="Actions" className="action-cell">
                           <button disabled={req.status === 'Verified'} onClick={() => updateStatus(req._id, 'Verified')}>Verify</button>
                           <button className="btn-secondary" disabled={req.status === 'Rejected'} onClick={() => updateStatus(req._id, 'Rejected')}>Reject</button>
                         </td>
@@ -314,9 +314,9 @@ export default function App() {
                       <tbody>
                         {group.transactions.map((tx) => (
                           <tr key={tx._id}>
-                            <td>{formatDate(tx.createdAt)}</td>
-                            <td>Rs {tx.amount}</td>
-                            <td><span className={`label-status ${statusLabel(tx.status)}`}>{tx.status}</span></td>
+                            <td data-label="Date">{formatDate(tx.createdAt)}</td>
+                            <td data-label="Amount">Rs {tx.amount}</td>
+                            <td data-label="Status"><span className={`label-status ${statusLabel(tx.status)}`}>{tx.status}</span></td>
                           </tr>
                         ))}
                       </tbody>
