@@ -418,9 +418,7 @@ button:disabled {
 
 	.tabs {
 		grid-template-columns: 1fr;
-		position: sticky;
-		top: 8px;
-		z-index: 3;
+		position: static;
 	}
 
 	.table {
