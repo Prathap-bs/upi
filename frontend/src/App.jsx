@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const API = 'https://upi-awr4.onrender.com';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'https://upi-awr4.onrender.com').replace(/\/$/, '');
+const ADMIN_API = `${API_BASE_URL}/api/admin`;
+const CUSTOMER_API = `${API_BASE_URL}/api/customer`;
 
 function statusLabel(status) {
   if (status === 'Waiting for Payment') return 'label-waiting';
@@ -35,7 +37,7 @@ export default function App() {
 
   const loadAccounts = async () => {
     try {
-      const res = await axios.get(`${API}/admin/accounts`);
+      const res = await axios.get(`${ADMIN_API}/accounts`);
       setAccounts(res.data);
     } catch (err) {
       console.error(err);
@@ -45,7 +47,7 @@ export default function App() {
 
   const loadRequests = async () => {
     try {
-      const res = await axios.get(`${API}/admin/paymentrequests`);
+      const res = await axios.get(`${ADMIN_API}/paymentrequests`);
       setRequests(res.data);
     } catch (err) {
       console.error(err);
@@ -60,7 +62,7 @@ export default function App() {
       if (filters.startDate) params.startDate = filters.startDate;
       if (filters.endDate) params.endDate = filters.endDate;
 
-      const res = await axios.get(`${API}/admin/transactions`, { params });
+      const res = await axios.get(`${ADMIN_API}/transactions`, { params });
       setGroupedTransactions(res.data.groupedTransactions || []);
     } catch (err) {
       console.error(err);
@@ -77,7 +79,7 @@ export default function App() {
   const addAccount = async () => {
     if (!newAccount.name || !newAccount.upiId) return setMessage('Fill name and UPI ID');
     try {
-      const res = await axios.post(`${API}/admin/accounts`, newAccount);
+      const res = await axios.post(`${ADMIN_API}/accounts`, newAccount);
       setAccounts(res.data);
       setNewAccount({ name: '', upiId: '' });
       setMessage('Account added');
@@ -88,7 +90,7 @@ export default function App() {
 
   const selectAccount = async (id) => {
     try {
-      const res = await axios.patch(`${API}/admin/accounts/${id}/select`);
+      const res = await axios.patch(`${ADMIN_API}/accounts/${id}/select`);
       setAccounts(res.data);
       setMessage('Selected account updated');
     } catch (err) {
@@ -100,7 +102,7 @@ export default function App() {
   const generateQR = async () => {
     if (!amount || Number(amount) <= 0) return setMessage('Enter a positive amount');
     try {
-      const res = await axios.post(`${API}/admin/paymentrequests`, { amount: Number(amount) });
+      const res = await axios.post(`${ADMIN_API}/paymentrequests`, { amount: Number(amount) });
       setRequests(res.data);
       setMessage('Payment request created');
     } catch (err) {
@@ -110,7 +112,7 @@ export default function App() {
 
   const updateStatus = async (id, status) => {
     try {
-      const res = await axios.patch(`${API}/admin/paymentrequests/${id}/status`, { status });
+      const res = await axios.patch(`${ADMIN_API}/paymentrequests/${id}/status`, { status });
       setRequests(res.data);
       setMessage(`Payment ${status}`);
     } catch (err) {
@@ -120,7 +122,7 @@ export default function App() {
 
   const customerClaim = async (id) => {
     try {
-      const res = await axios.patch(`${API}/customer/paymentrequests/${id}/claim`);
+      const res = await axios.patch(`${CUSTOMER_API}/paymentrequests/${id}/claim`);
       setRequests(res.data);
       setMessage('You have claimed payment');
     } catch (err) {
