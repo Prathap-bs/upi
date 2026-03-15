@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const API = 'http://localhost:5000/api';
+const API = 'https://upi-awr4.onrender.com';
 
 function statusLabel(status) {
   if (status === 'Waiting for Payment') return 'label-waiting';
