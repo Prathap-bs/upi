@@ -79,6 +79,65 @@ router.get('/paymentrequests', async (req, res) => {
   }
 });
 
+router.get('/transactions', async (req, res) => {
+  try {
+    const { upiId, startDate, endDate } = req.query;
+    const query = {};
+
+    if (upiId && upiId !== 'all') {
+      query['upiAccount.upiId'] = upiId;
+    }
+
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) {
+        query.createdAt.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        query.createdAt.$lte = end;
+      }
+    }
+
+    const transactions = await PaymentRequest.find(query).sort({ createdAt: -1 });
+
+    const groupedMap = transactions.reduce((acc, tx) => {
+      const key = tx.upiAccount?.upiId || 'unknown@upi';
+      if (!acc[key]) {
+        acc[key] = {
+          upiId: key,
+          accountName: tx.upiAccount?.name || 'Unknown Account',
+          totalAmount: 0,
+          transactionCount: 0,
+          statusCounts: {
+            waiting: 0,
+            claimed: 0,
+            verified: 0,
+            rejected: 0,
+          },
+          transactions: [],
+        };
+      }
+
+      acc[key].totalAmount += tx.amount;
+      acc[key].transactionCount += 1;
+      if (tx.status === 'Waiting for Payment') acc[key].statusCounts.waiting += 1;
+      if (tx.status === 'Customer Claimed Payment') acc[key].statusCounts.claimed += 1;
+      if (tx.status === 'Verified') acc[key].statusCounts.verified += 1;
+      if (tx.status === 'Rejected') acc[key].statusCounts.rejected += 1;
+      acc[key].transactions.push(tx);
+
+      return acc;
+    }, {});
+
+    const groupedTransactions = Object.values(groupedMap);
+    res.json({ transactions, groupedTransactions });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.patch('/paymentrequests/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
